@@ -1,0 +1,29 @@
+{
+    "name": "shisa/httpclient",
+    "version": "0.1.0",
+    "type": "library",
+    "description": "A simple lightweight HTTP client for php",
+    "keywords": [
+        "http",
+        "httpclient",
+        "httprequest"
+    ],
+    "homepage": "https://github.com/Xavier-Lam/httpclient",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Xavier-Lam",
+            "email": "xavierlam7@hotmail.com",
+            "homepage": "https://github.com/Xavier-Lam",
+            "role": "Developer"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Shisa\\HTTPClient\\": "HTTPClient/"
+        }
+    },
+    "require": {
+        "php": ">=5.3"
+    }
+}
