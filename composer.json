@@ -8,7 +8,7 @@
         "httpclient",
         "httprequest"
     ],
-    "homepage": "https://github.com/Xavier-Lam/httpclient",
+    "homepage": "https://github.com/Xavier-Lam/shisa-httpclient",
     "license": "MIT",
     "authors": [
         {
