@@ -4,7 +4,7 @@ A simple lightweight http client for PHP.
 
 ## Installation
 
-    composer require shisa\httpclient
+    composer require shisa/httpclient
 
 
 ## Quickstart
@@ -29,3 +29,7 @@ A simple lightweight http client for PHP.
 
 
 ## Changelog
+### 0.2.0
+* Auth的isInvalidAuthError改为接受Exception异常
+* 增加authRequestPostPrepare方法
+* PreparedRequest的headers改为Key: value

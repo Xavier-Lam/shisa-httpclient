@@ -129,7 +129,10 @@ class Curl
         return $this->hasopt($option)? $this->options[$option]: null;
     }
 
-    private $funcs = [];
+    private $funcs = [
+        'afterExec' => [],
+        'beforeExec' => []
+    ];
 
     public function addBeforeExec($func)
     {

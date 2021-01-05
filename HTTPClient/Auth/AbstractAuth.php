@@ -1,8 +1,9 @@
 <?php
 namespace Shisa\HTTPClient\Auth;
 
+use Exception;
 use Shisa\HTTPClient\Clients\HTTPClient;
-use Shisa\HTTPClient\Exceptions\ResponseError;
+use Shisa\HTTPClient\HTTP\PreparedRequest;
 use Shisa\HTTPClient\HTTP\Request;
 
 abstract class AbstractAuth
@@ -31,9 +32,10 @@ abstract class AbstractAuth
     }
 
     /**
+     * @param \Exception $e
      * @return bool
      */
-    abstract function isInvalidAuthError(ResponseError $e);
+    abstract function isInvalidAuthError($e);
 
     abstract function auth();
     
@@ -42,8 +44,13 @@ abstract class AbstractAuth
         $this->auth();
     }
 
-    /**
-     * @return Request
-     */
-    abstract function authRequest(Request $request);
+    public function authRequest(Request $request)
+    {
+        return $request;
+    }
+
+    public function authRequestPostPrepare(PreparedRequest $preparedRequest, Request $request)
+    {
+        return $preparedRequest;
+    }
 }

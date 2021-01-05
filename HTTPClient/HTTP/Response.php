@@ -18,7 +18,7 @@ class Response
 
         $headersSize = $ch->getinfo(CURLINFO_HEADER_SIZE);
         $headersStr = substr($raw, 0, $headersSize);
-        $headersArray = preg_split('/\\r\\n|\\n|\\r/', $headersStr);
+        $headersArray = array_filter(preg_split('/\\r\\n|\\n|\\r/', $headersStr));
         foreach($headersArray as $header) {
             list($key, $value) = preg_split('/:\\s*/', $header, 2);
             if($key && $value) {

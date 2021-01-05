@@ -21,19 +21,23 @@ trait RecursiveClientMixin
 
     public function setAuth(AbstractAuth $auth = null)
     {
-        parent::setAuth($auth);
+        if(method_exists(parent::class, 'auth')) {
+            parent::auth();
+        }
         foreach($this->clients as $client) {
-            if($client instanceof AuthClient) {
+            if($client instanceof IAuthClient) {
                 $client->setAuth($auth);
             }
         }
     }
 
+    /**
+     * @return HTTPClient|RecursiveClientMixin
+     */
     protected function createChildClient($cls, $args = [])
     {
         $reflectionClass = new \ReflectionClass($cls);
-        if($reflectionClass->isSubclassOf(AuthClient::class)
-           && is_a($this, AuthClient::class)) {
+        if($reflectionClass->implementsInterface(IAuthClient::class)) {
             $args = array_merge([$this->getAuth()], $args);
         }
         $client = $reflectionClass->newInstanceArgs($args);

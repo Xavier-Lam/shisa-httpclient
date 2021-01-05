@@ -11,11 +11,22 @@ use Shisa\HTTPClient\HTTP\Response;
 
 class HTTPClient
 {
+    /**
+     * 响应失败不抛出
+     */
+    const OPTION_RESPONSENOEXCEPTIONS = 'nothrow';
+
     protected $baseUrl;
+
     /**
      * @param IFormatter
      */
     private $formatter;
+
+    public function __construct()
+    {
+        
+    }
 
     public function getBaseUrl()
     {
@@ -69,7 +80,7 @@ class HTTPClient
      */
     protected function createRequest($url, $method = 'GET', $data = [], $params = [], $headers = [], $options = [])
     {
-        if(!parse_url($url)['host']) {
+        if(!parse_url($url, PHP_URL_HOST)) {
             $url = $this->getBaseUrl() . $url;
         }
         $cls = $this->getRequestClass();
@@ -91,6 +102,9 @@ class HTTPClient
     public final function exec(PreparedRequest $preparedRequest)
     {
         $ch = $preparedRequest->make();
+        $ch->setopt(CURLOPT_PROXY, '192.168.58.153:12580');
+        $ch->setopt(CURLOPT_SSL_VERIFYHOST, false);
+        $ch->setopt(CURLOPT_SSL_VERIFYPEER, false);
         $resp = $ch->exec();
         return new Response($ch, $resp);
     }
@@ -101,7 +115,7 @@ class HTTPClient
             throw new CurlError($response->error, $response->errno);
         }
 
-        if(!$response->isSuccess()) {
+        if(!$options[static::OPTION_RESPONSENOEXCEPTIONS] && !$response->isSuccess()) {
             throw new HttpError($response);
         }
         

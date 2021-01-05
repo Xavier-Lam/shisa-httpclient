@@ -2,8 +2,8 @@
 namespace Shisa\HTTPClient\HTTP;
 
 /**
- * @property $data
- * @property $params
+ * @property array $data
+ * @property array $params
  */
 class Request
 {
@@ -28,7 +28,7 @@ class Request
         // 处理querystring
         $u = parse_url($url);
         $query = [];
-        parse_str($u['query'], $query);
+        array_key_exists('query', $u) && parse_str($u['query'], $query);
         if($this->isNoBodyMethod()) {
             $params = array_merge($params, $data);
             $data = [];
