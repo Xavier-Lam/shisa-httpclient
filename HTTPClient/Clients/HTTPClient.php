@@ -56,18 +56,13 @@ class HTTPClient
      */
     public function send($url, $method = 'GET', $data = [], $params = [], $headers = [], $options = [])
     {
-        if(!is_a($url, PreparedRequest::class)) {
-            if(is_a($url, Request::class)) {
-                $request = $url;
-            } else {
-                $request = $this->createRequest($url, $method, $data, $params, $headers, $options);
-            }
-            $preparedRequest = $this->prepare($request, $options);
-        } else {
+        if(is_a($url, PreparedRequest::class)) {
             $preparedRequest = $url;
+        } else {
+            $preparedRequest = $this->createPrepareRequest($url, $method, $data, $params, $headers, $options);
         }
         $response = $this->exec($preparedRequest);
-        return $this->handleResponse($response, $request, $options);
+        return $this->handleResponse($response, $preparedRequest->request, $options);
     }
 
     protected function getRequestClass()
@@ -78,7 +73,7 @@ class HTTPClient
     /**
      * @return Request
      */
-    protected function createRequest($url, $method = 'GET', $data = [], $params = [], $headers = [], $options = [])
+    public function createRequest($url, $method = 'GET', $data = [], $params = [], $headers = [], $options = [])
     {
         if(!parse_url($url, PHP_URL_HOST)) {
             $url = $this->getBaseUrl() . $url;
@@ -87,12 +82,24 @@ class HTTPClient
         return new $cls($url, $method, $data, $params, $headers);
     }
 
+    public function createPrepareRequest($url, $method, $data, $params, $headers, $options)
+    {
+        if(is_a($url, Request::class)) {
+            $request = $url;
+        } else {
+            $request = $this->createRequest($url, $method, $data, $params, $headers, $options);
+        }
+        return $this->prepare($request, $options);
+    }
+
     /**
      * @return PreparedRequest
      */
     public function prepare(Request $request, $options = [])
     {
-        $options['formatter'] = $this->getFormatter();
+        if(!isset($options['formatter'])) {
+            $options['formatter'] = $this->getFormatter();
+        }
         return $request->prepare($options);
     }
 
@@ -102,9 +109,6 @@ class HTTPClient
     public final function exec(PreparedRequest $preparedRequest)
     {
         $ch = $preparedRequest->make();
-        $ch->setopt(CURLOPT_PROXY, '192.168.58.153:12580');
-        $ch->setopt(CURLOPT_SSL_VERIFYHOST, false);
-        $ch->setopt(CURLOPT_SSL_VERIFYPEER, false);
         $resp = $ch->exec();
         return new Response($ch, $resp);
     }

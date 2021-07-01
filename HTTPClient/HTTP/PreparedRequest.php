@@ -11,7 +11,9 @@ class PreparedRequest
 
     public $data;
 
-    public function __construct($method, $uri, $headers, $data) {
+    public $request;
+
+    public function __construct($method, $uri, $headers, $data, Request $request = null) {
         $this->method = $method;
         $this->uri = $uri;
         $this->headers = [];
@@ -19,6 +21,7 @@ class PreparedRequest
             $this->headers[] = $key . ': ' . $value;
         }
         $this->data = $data;
+        $this->request = $request;
     }
 
     public function make(Curl $ch = null) {

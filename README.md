@@ -29,6 +29,11 @@ A simple lightweight http client for PHP.
 
 
 ## Changelog
+### 0.2.1
+* (BREAKING CHANGE) createRequest方法改为public方法
+* 增加FormData Formatter
+* 允许给`Request`对象增加属性
+
 ### 0.2.0
 * Auth的isInvalidAuthError改为接受Exception异常
 * 增加authRequestPostPrepare方法

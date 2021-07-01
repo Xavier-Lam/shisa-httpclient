@@ -19,6 +19,8 @@ class Request
 
     private $_params;
 
+    private $_attrs = [];
+
     public $headers;
 
     public function __construct($url, $method = 'GET', $data = [], $params = [], $headers = []) {
@@ -49,7 +51,7 @@ class Request
         $headers = $this->prepareHeaders($options, $uri);
         $data = $this->prepareData($options, $headers, $uri);
 
-        return new PreparedRequest($this->method, $uri, $headers, $data);
+        return new PreparedRequest($this->method, $uri, $headers, $data, $this);
     }
 
     protected function prepareUrl($options) {
@@ -99,13 +101,15 @@ class Request
             $rv = &$this->_params;
             return $rv;
         }
-        return parent::__get($name);
+        if(isset($this->_attrs[$name])) {
+            return $this->_attrs[$name];
+        }
     }
 
     public function __set($name, $value) {
         if($name == 'data' && !$this->isNoBodyMethod()) {
             $this->_data = $value;
         }
-        parent::__set($name, $value);
+        $this->_attrs[$name] = $value;
     }
 }
